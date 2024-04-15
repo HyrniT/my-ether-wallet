@@ -22,7 +22,7 @@ const AccessWalletPage = () => {
           </h4>
         </div>
       </div>
-      <div className='mx-auto max-w-[650px] w-full'>
+      <div className='mx-auto max-w-[650px] w-full -z-10'>
         <CardAccessWallet
           image='/assets/icon-enkrypt.svg'
           title='Enkrypt'
