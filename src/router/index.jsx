@@ -4,6 +4,13 @@ import HomePage from '../pages/home';
 import CreateWalletPage from '../pages/create';
 import AccessWalletPage from '../pages/access';
 
+export const mappingPathToTitle = {
+  '/': 'MyEtherWallet',
+  '/wallet/create':
+    'Create A Crypto Wallet | Mobile and Browser Crypto Wallets',
+  '/wallet/access': 'Access Your Crypto Wallet on MyEtherWallet',
+};
+
 const router = createBrowserRouter([
   {
     element: <RootLayout />,

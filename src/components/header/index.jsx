@@ -1,6 +1,9 @@
 import styles from './styles.module.css';
 
-const Header = () => {
+// eslint-disable-next-line react/prop-types
+const Header = ({ isWalletAccess }) => {
+  const visibilityStyle = isWalletAccess ? 'hidden' : 'visible';
+
   return (
     <header className='fixed container mt-[36px]'>
       <div
@@ -133,9 +136,10 @@ const Header = () => {
           </div>
         </div>
         <a
-          href='https://www.myetherwallet.com/wallet/access'
+          href='/wallet/access'
           target='_blank'
           className={`${styles['header__access-button']}`}
+          style={{ visibility: visibilityStyle }}
         >
           Access my wallet
         </a>

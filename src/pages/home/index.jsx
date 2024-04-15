@@ -1,6 +1,7 @@
+import { Link } from 'react-router-dom';
 import styles from './styles.module.css';
 
-const Body = () => {
+const HomePage = () => {
   return (
     <>
       <div className={`${styles['peggy']}`}>
@@ -15,16 +16,19 @@ const Body = () => {
         </h1>
         <div className={`${styles['start-block__create']}`}>
           <div className={`${styles['start-block__create-group']}`}>
-            <a href='javascript:void(0)' className={`${styles['button']}`}>
+            <Link
+              to='/wallet/create'
+              target='_blank'
+              className={`${styles['button']}`}
+            >
               Create a new wallet
-            </a>
+            </Link>
             <p>
               or{' '}
-              <a
-                href='https://www.myetherwallet.com/wallet/access'
-                target='_blank'
-              >
-                Access my wallet
+              <a href='javascript:void(0)'>
+                <Link to='/wallet/access' target='_blank'>
+                  Access my wallet
+                </Link>
               </a>
             </p>
           </div>
@@ -35,4 +39,4 @@ const Body = () => {
   );
 };
 
-export default Body;
+export default HomePage;
