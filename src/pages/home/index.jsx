@@ -32,7 +32,7 @@ const HomePage = () => {
               </a>
             </p>
           </div>
-          {/* <img src='assets/achievement.png' alt='Achievement' /> */}
+          <img src='assets/achievement.png' alt='Achievement' />
         </div>
       </div>
     </>

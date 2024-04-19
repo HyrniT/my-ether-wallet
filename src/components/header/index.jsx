@@ -5,7 +5,7 @@ const Header = ({ isWalletAccess }) => {
   const visibilityStyle = isWalletAccess ? 'hidden' : 'visible';
 
   return (
-    <header className='fixed container mt-[36px]'>
+    <header className='fixed container mt-[36px] z-10'>
       <div
         className={`${styles['header__container']} flex items-center justify-between rounded-[52px] shadow mx-[-10px] px-[16px]`}
       >

@@ -12,18 +12,6 @@
     right: 16px;
 }
 
-.btn__content {
-    align-items: center;
-    color: inherit;
-    display: flex;
-    flex: 1 0 auto;
-    justify-content: inherit;
-    line-height: normal;
-    position: relative;
-    transition: inherit;
-    transition-property: opacity;
-}
-
 .mew-heading-2 {
     white-space: normal;
     word-wrap: break-word;

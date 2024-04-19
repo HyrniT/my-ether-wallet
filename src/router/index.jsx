@@ -2,13 +2,19 @@ import { createBrowserRouter } from 'react-router-dom';
 import RootLayout from '../components/layouts/root';
 import HomePage from '../pages/home';
 import CreateWalletPage from '../pages/create';
+import CreateWalletSoftwarePage from '../pages/create/software';
 import AccessWalletPage from '../pages/access';
+import AccessWalletSoftwarePage from '../pages/access/software';
+import AccessWalletPrivateKeyPage from '../pages/access/private-key';
 
 export const mappingPathToTitle = {
   '/': 'MyEtherWallet',
   '/wallet/create':
     'Create A Crypto Wallet | Mobile and Browser Crypto Wallets',
   '/wallet/access': 'Access Your Crypto Wallet on MyEtherWallet',
+  '/wallet/access/software': 'Access Your Crypto Wallet on MyEtherWallet',
+  '/wallet/access/software/private-key':
+    'Access Your Crypto Wallet on MyEtherWallet',
 };
 
 const router = createBrowserRouter([
@@ -30,8 +36,25 @@ const router = createBrowserRouter([
                 element: <CreateWalletPage />,
               },
               {
+                path: 'create/software',
+                element: <CreateWalletSoftwarePage />,
+              },
+              {
                 path: 'access',
-                element: <AccessWalletPage />,
+                children: [
+                  {
+                    index: true,
+                    element: <AccessWalletPage />,
+                  },
+                  {
+                    path: 'software',
+                    element: <AccessWalletSoftwarePage />,
+                  },
+                  {
+                    path: 'software/private-key',
+                    element: <AccessWalletPrivateKeyPage />,
+                  },
+                ],
               },
             ],
           },

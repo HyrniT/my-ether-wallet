@@ -2,7 +2,7 @@ import styles from './styles.module.css';
 
 const Footer = () => {
   return (
-    <footer className='container'>
+    <footer className='container bg-white pt-12'>
       <div className={`${styles['row']}`}>
         <div className={`${styles['col-3']}`}>
           <div className={`${styles['footer__links']}`}>
