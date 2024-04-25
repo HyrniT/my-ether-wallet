@@ -3,6 +3,7 @@ import RootLayout from '../components/layouts/root';
 import HomePage from '../pages/home';
 import CreateWalletPage from '../pages/create';
 import CreateWalletSoftwarePage from '../pages/create/software';
+import CreateWalletPrivateKeyPage from '../pages/create/private-key';
 import AccessWalletPage from '../pages/access';
 import AccessWalletSoftwarePage from '../pages/access/software';
 import AccessWalletPrivateKeyPage from '../pages/access/private-key';
@@ -10,6 +11,10 @@ import AccessWalletPrivateKeyPage from '../pages/access/private-key';
 export const mappingPathToTitle = {
   '/': 'MyEtherWallet',
   '/wallet/create':
+    'Create A Crypto Wallet | Mobile and Browser Crypto Wallets',
+  '/wallet/create/software':
+    'Create A Crypto Wallet | Mobile and Browser Crypto Wallets',
+  '/wallet/create/software/private-key':
     'Create A Crypto Wallet | Mobile and Browser Crypto Wallets',
   '/wallet/access': 'Access Your Crypto Wallet on MyEtherWallet',
   '/wallet/access/software': 'Access Your Crypto Wallet on MyEtherWallet',
@@ -33,11 +38,25 @@ const router = createBrowserRouter([
             children: [
               {
                 path: 'create',
-                element: <CreateWalletPage />,
-              },
-              {
-                path: 'create/software',
-                element: <CreateWalletSoftwarePage />,
+                children: [
+                  {
+                    index: true,
+                    element: <CreateWalletPage />,
+                  },
+                  {
+                    path: 'software',
+                    children: [
+                      {
+                        index: true,
+                        element: <CreateWalletSoftwarePage />,
+                      },
+                      {
+                        path: 'private-key',
+                        element: <CreateWalletPrivateKeyPage />,
+                      },
+                    ],
+                  },
+                ],
               },
               {
                 path: 'access',
@@ -48,11 +67,16 @@ const router = createBrowserRouter([
                   },
                   {
                     path: 'software',
-                    element: <AccessWalletSoftwarePage />,
-                  },
-                  {
-                    path: 'software/private-key',
-                    element: <AccessWalletPrivateKeyPage />,
+                    children: [
+                      {
+                        index: true,
+                        element: <AccessWalletSoftwarePage />,
+                      },
+                      {
+                        path: 'private-key',
+                        element: <AccessWalletPrivateKeyPage />,
+                      },
+                    ],
                   },
                 ],
               },

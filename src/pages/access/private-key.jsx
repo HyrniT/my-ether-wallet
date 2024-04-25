@@ -4,7 +4,7 @@ import { TextField, Checkbox, Button } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined';
 import WarningIcon from '@mui/icons-material/Warning';
-import { green, orange } from '@mui/material/colors';
+import { orange } from '@mui/material/colors';
 
 const AccessWalletPrivateKeyPage = () => {
   const [value, setValue] = useState('');

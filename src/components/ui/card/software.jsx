@@ -2,7 +2,7 @@
 import styles from './styles.module.css';
 import { useNavigate } from 'react-router-dom';
 
-const CardSoftware = ({ title, image, link }) => {
+const CardSoftware = ({ title, description, image, link }) => {
   const navigate = useNavigate();
 
   return (
@@ -12,7 +12,10 @@ const CardSoftware = ({ title, image, link }) => {
         onClick={() => navigate(link)}
       >
         <div className='w-full flex items-center justify-between px-5'>
-          <div className={`${styles['mew-heading-2']} ml-3`}>{title}</div>
+          <div className='flex flex-col text-left ml-3'>
+            <div className={`${styles['mew-heading-2']}`}>{title}</div>
+            <div className='break-words text-[14px]'>{description}</div>
+          </div>
           <img src={image} className='ml-5 mr-5 h-[70px]' />
         </div>
       </button>

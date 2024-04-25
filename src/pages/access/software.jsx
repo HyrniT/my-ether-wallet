@@ -6,16 +6,22 @@ import { orange } from '@mui/material/colors';
 const CARD_DATA = [
   {
     title: 'Keystore',
+    description:
+      'Using a keystore file online makes your wallet more vulnerable to loss of funds. We don’t recommend this method of wallet creation.',
     image: '/assets/icon-keystore-file.svg',
     link: '/wallet/access/software/private-key',
   },
   {
     title: 'Mnemonic Phrase',
+    description:
+      'Using a Mnemonic Phrase online makes your wallet more vulnerable to loss of funds. We don’t recommend this method of wallet creation.',
     image: '/assets/icon-mnemonic.svg',
     link: '/wallet/access/software/private-key',
   },
   {
     title: 'Private Key',
+    description:
+      'A private key is a crucial piece of information granting access to your cryptocurrency holdings. Keep it secure offline, as online exposure risks theft or loss of funds.',
     image: '/assets/icon-private.png',
     link: '/wallet/access/software/private-key',
   },
@@ -29,7 +35,7 @@ const AccessWalletSoftwarePage = () => {
           className={`${styles['text-decoration--container']} flex flex-col text-black pt-5 pb-11 px-8`}
         >
           <div className='mb-[52px] mt-[20px] text-center text-[32px] font-bold'>
-            Access Wallet with Private Key
+            Select Software Wallet
           </div>
           <div className='mx-auto max-w-[650px] w-full'>
             {CARD_DATA.map((card, index) => (
