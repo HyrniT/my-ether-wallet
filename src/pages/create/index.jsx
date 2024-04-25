@@ -53,7 +53,7 @@ const CreateWalletPage = () => {
           <h4>
             Already have a wallet?{' '}
             <Link
-              to='/wallet/create'
+              to='/wallet/access'
               className={`${styles['text-decoration--underline']}`}
             >
               Access Wallet

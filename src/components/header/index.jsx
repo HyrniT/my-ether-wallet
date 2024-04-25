@@ -7,7 +7,7 @@ const Header = ({ isWalletAccess }) => {
   return (
     <header className='fixed container mt-[36px] z-10'>
       <div
-        className={`${styles['header__container']} flex items-center justify-between rounded-[52px] shadow mx-[-10px] px-[16px]`}
+        className={`${styles['header__container']} flex flex-wrap items-center justify-between rounded-[52px] shadow mx-[-10px] px-[16px]`}
       >
         <a href='/' className={`${styles['header__logo']}`}>
           <svg
