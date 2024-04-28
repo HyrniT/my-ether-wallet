@@ -1,7 +1,12 @@
 import RouterProvider from './providers/router';
+import ReduxProvider from './providers/redux';
 
 function App() {
-  return <RouterProvider />;
+  return (
+    <ReduxProvider>
+      <RouterProvider />
+    </ReduxProvider>
+  );
 }
 
 export default App;

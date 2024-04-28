@@ -13,9 +13,11 @@ const RootLayout = () => {
     document.title = mappingPathToTitle[currentPath] || 'MyEtherWallet';
 
     const body = document.querySelector('body');
-    body.style.backgroundColor = currentPath.includes('/wallet')
-      ? '#184f90'
-      : '#ffffff';
+    body.style.backgroundColor =
+      currentPath.includes('/wallet/access') ||
+      currentPath.includes('/wallet/create')
+        ? '#184f90'
+        : '#ffffff';
   }, [location.pathname]);
 
   return (
