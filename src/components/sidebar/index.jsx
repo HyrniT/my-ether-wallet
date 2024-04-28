@@ -5,15 +5,7 @@ import { IconButton, Snackbar } from '@mui/material';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useSelector } from 'react-redux';
 import Navbar from '../navbar';
-
-const maskPublicKey = publicKey => {
-  const visibleLength = 6;
-  const hiddenLength = 14;
-  const visibleStart = '0x' + publicKey.substr(0, visibleLength);
-  const visibleEnd = publicKey.substr(-visibleLength);
-  const maskedPart = '●'.repeat(hiddenLength);
-  return `${visibleStart}${maskedPart}${visibleEnd}`;
-};
+import { maskString } from '../../utils/maskString';
 
 const Sidebar = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -23,7 +15,7 @@ const Sidebar = () => {
   };
 
   const publicKey = useSelector(state => state.user.publicKey);
-  const maskedPublicKey = maskPublicKey(publicKey);
+  const maskedPublicKey = maskString(publicKey);
 
   return (
     <div className='h-screen bg-[#07385F]'>

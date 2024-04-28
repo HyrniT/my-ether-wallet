@@ -8,7 +8,7 @@ import CreateWalletPrivateKeyPage from '../pages/create/private-key';
 import AccessWalletPage from '../pages/access';
 import AccessWalletSoftwarePage from '../pages/access/software';
 import AccessWalletPrivateKeyPage from '../pages/access/private-key';
-import DashboardPage from '../pages/dashboard';
+import EtherscanPage from '../pages/etherscan';
 import SendPage from '../pages/send';
 import MinePage from '../pages/mine';
 import BlockDetailsPage from '../pages/block';
@@ -98,14 +98,14 @@ const router = createBrowserRouter([
     children: [
       {
         path: 'wallet/etherscan',
-        element: <DashboardPage />,
+        element: <EtherscanPage />,
       },
       {
-        path: 'wallet/etherscan/block/:blockId',
+        path: 'wallet/etherscan/block/:id',
         element: <BlockDetailsPage />,
       },
       {
-        path: 'wallet/etherscan/transaction/:transactionId',
+        path: 'wallet/etherscan/transaction/:id',
         element: <TransactionDetailsPage />,
       },
       {

@@ -5,18 +5,11 @@ import { TextField, Button, Snackbar } from '@mui/material';
 import WarningIcon from '@mui/icons-material/Warning';
 import { orange } from '@mui/material/colors';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { maskString } from '../../utils/maskString';
 
 const privateKey =
   '7b6f741641269ee9ad011362ea59a6666878f15cb33ec0fcc7d7bb3e3121e166';
 
-const maskPrivateKey = privateKey => {
-  const visibleLength = 10;
-  const hiddenLength = 40;
-  const visibleStart = privateKey.substr(0, visibleLength);
-  const visibleEnd = privateKey.substr(-visibleLength);
-  const maskedPart = '●'.repeat(hiddenLength);
-  return `${visibleStart}${maskedPart}${visibleEnd}`;
-};
 const CreateWalletPrivateKeyPage = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
@@ -24,7 +17,7 @@ const CreateWalletPrivateKeyPage = () => {
     setOpenSnackbar(false);
   };
 
-  const maskedPrivateKey = maskPrivateKey(privateKey);
+  const maskedPrivateKey = maskString(privateKey, 10, 40);
 
   return (
     <div className='w-full flex flex-col items-center justify-center mt-[140px]'>

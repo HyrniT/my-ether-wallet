@@ -11,7 +11,7 @@ import { shortenString } from '../../utils';
 const blockHeader = [
   {
     field: 'id',
-    headerName: 'ID',
+    headerName: 'Block Height',
     width: 250,
     renderCell: params => (
       <Link to={`/wallet/etherscan/block/${params.value}`}>
@@ -213,7 +213,7 @@ const transactionData = [
   },
 ];
 
-const DashboardPage = () => {
+const EtherscanPage = () => {
   return (
     <div className='my-5 mx-10'>
       <div className='grid grid-cols-2 gap-5'>
@@ -252,4 +252,4 @@ const DashboardPage = () => {
   );
 };
 
-export default DashboardPage;
+export default EtherscanPage;
