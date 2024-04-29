@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Chip } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { Link } from 'react-router-dom';
@@ -34,14 +33,17 @@ const blockHeader = [
     field: 'status',
     headerName: 'Status',
     width: 110,
-    renderCell: params => (
-      <Chip
-        label={params.value}
-        size='small'
-        variant='outlined'
-        color={params.value === 'Finalized' ? 'success' : 'error'}
-      />
-    ),
+    renderCell: params =>
+      params.value === 'Finalized' ? (
+        <Chip
+          label={params.value}
+          size='small'
+          variant='outlined'
+          color='success'
+        />
+      ) : (
+        <Chip label={params.value} size='small' />
+      ),
   },
   {
     field: 'blockReward',
@@ -150,19 +152,19 @@ const blockData = [
   },
   {
     id: 7,
-    status: 'Unfinalized',
+    status: 'Pending',
     blockReward: 35,
     timestamp: '1m ago',
   },
   {
     id: 8,
-    status: 'Unfinalized',
+    status: 'Pending',
     blockReward: 40,
     timestamp: '1m ago',
   },
   {
     id: 9,
-    status: 'Unfinalized',
+    status: 'Pending',
     blockReward: 45,
     timestamp: '1m ago',
   },
@@ -218,7 +220,10 @@ const EtherscanPage = () => {
     <div className='my-5 mx-10'>
       <div className='grid grid-cols-2 gap-5'>
         <div className='col-span-1'>
-          <h1 className='text-xl font-bold mb-3'>Latest Blocks</h1>
+          <div className='flex'>
+            <div className='w-[5px] h-[28px] bg-[#1976D2] mr-2'></div>
+            <h1 className='text-xl font-bold mb-3'>Latest Blocks</h1>
+          </div>
           <div>
             <DataGrid
               rows={blockData}
@@ -229,11 +234,19 @@ const EtherscanPage = () => {
                   paginationModel: { page: 0, pageSize: 5 },
                 },
               }}
+              pageSizeOptions={[5]}
+              disableColumnMenu
+              disableColumnFilter
+              disableColumnSelector
+              disableColumnSorting
             />
           </div>
         </div>
         <div className='col-span-1'>
-          <h1 className='text-xl font-bold mb-3'>Latest Transactions</h1>
+          <div className='flex'>
+            <div className='w-[5px] h-[28px] bg-[#1976D2] mr-2'></div>
+            <h1 className='text-xl font-bold mb-3'>Latest Transactions</h1>
+          </div>
           <div>
             <DataGrid
               rows={transactionData}
@@ -244,6 +257,11 @@ const EtherscanPage = () => {
                   paginationModel: { page: 0, pageSize: 5 },
                 },
               }}
+              pageSizeOptions={[5]}
+              disableColumnMenu
+              disableColumnFilter
+              disableColumnSelector
+              disableColumnSorting
             />
           </div>
         </div>

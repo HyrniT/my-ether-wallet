@@ -1,4 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
+import { useState } from 'react';
+import BuyModal from '../ui/modal/buy';
 
 const activeStyle = {
   backgroundColor: '#204C6F',
@@ -13,6 +15,15 @@ const unactiveStyle = {
 
 const Navbar = () => {
   const location = useLocation();
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
 
   return (
     <div className='py-2'>
@@ -20,7 +31,7 @@ const Navbar = () => {
         <div
           className='flex items-center justify-start px-4 hover:bg-[#204C6F]'
           style={
-            location.pathname === '/wallet/etherscan'
+            location.pathname.startsWith('/wallet/etherscan')
               ? activeStyle
               : unactiveStyle
           }
@@ -72,6 +83,7 @@ const Navbar = () => {
       <div
         className='flex items-center justify-start px-4 hover:bg-[#204C6F]'
         style={unactiveStyle}
+        onClick={handleOpenModal}
       >
         <div className='p-4'>
           <img
@@ -116,6 +128,7 @@ const Navbar = () => {
         </div>
         <div className='text-sm tracking-tight'>Logout</div>
       </div>
+      <BuyModal open={openModal} onClose={handleCloseModal} />
     </div>
   );
 };

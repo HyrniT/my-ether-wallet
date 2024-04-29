@@ -25,12 +25,25 @@ function formatTimeAgo(timestamp) {
 
   let timeAgo = `${value} ${unit} ago`;
 
-  const date = new Date(timestamp);
-  const formattedDate = date.toLocaleString('en-US', { timeZoneName: 'short' });
-
-  timeAgo += ` (${formattedDate})`;
-
   return timeAgo;
 }
 
-export { formatTimeAgo };
+function formatTimeUTC(timestamp) {
+  const date = new Date(timestamp);
+  const options = {
+    year: 'numeric',
+    month: 'short',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true,
+    timeZoneName: 'short',
+  };
+  const formatter = new Intl.DateTimeFormat('en-US', options);
+  const formattedDate = formatter.format(date);
+
+  return formattedDate + ' +UTC';
+}
+
+export { formatTimeAgo, formatTimeUTC };

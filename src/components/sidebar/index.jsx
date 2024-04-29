@@ -5,7 +5,7 @@ import { IconButton, Snackbar } from '@mui/material';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useSelector } from 'react-redux';
 import Navbar from '../navbar';
-import { maskString } from '../../utils/maskString';
+import { maskString, formatMoney } from '../../utils';
 
 const Sidebar = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -31,7 +31,7 @@ const Sidebar = () => {
             <div className='text-white text-sm'>{maskedPublicKey}</div>
           </div>
           <div className='absolute top-1/2 left-0 transform -translate-y-1/2 pl-4'>
-            <h1 className='text-white text-3xl font-bold'>$0.00</h1>
+            <h1 className='text-white text-3xl font-bold'>{formatMoney(0)}</h1>
           </div>
           <div className='absolute bottom-0 left-0 p-4 text-white'>
             <div className='text-sm'>0 ETH</div>
