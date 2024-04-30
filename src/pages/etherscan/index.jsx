@@ -11,7 +11,7 @@ const blockHeader = [
   {
     field: 'id',
     headerName: 'Block Height',
-    width: 250,
+    flex: 3,
     renderCell: params => (
       <Link to={`/wallet/etherscan/block/${params.value}`}>
         <span className='mr-2'>
@@ -32,7 +32,7 @@ const blockHeader = [
   {
     field: 'status',
     headerName: 'Status',
-    width: 110,
+    flex: 1,
     renderCell: params =>
       params.value === 'Finalized' ? (
         <Chip
@@ -48,7 +48,7 @@ const blockHeader = [
   {
     field: 'blockReward',
     headerName: 'Block Reward',
-    width: 206,
+    flex: 2,
     type: 'number',
     renderCell: params => (
       <Tooltip title={params.value + ' Eth'}>
@@ -62,7 +62,7 @@ const transactionHeader = [
   {
     field: 'id',
     headerName: 'Transaction Hash',
-    width: 250,
+    flex: 3,
     renderCell: params => (
       <Link to={`/wallet/etherscan/transaction/${params.value}`}>
         <span className='mr-2'>
@@ -83,7 +83,7 @@ const transactionHeader = [
   {
     field: 'from',
     headerName: 'From',
-    width: 100,
+    flex: 1,
     renderCell: params => (
       <Tooltip title={'From: ' + params.value}>
         {shortenString(params.value)}
@@ -93,7 +93,7 @@ const transactionHeader = [
   {
     field: 'to',
     headerName: 'To',
-    width: 100,
+    flex: 1,
     renderCell: params => (
       <Tooltip title={'To: ' + params.value}>
         {shortenString(params.value)}
@@ -103,7 +103,7 @@ const transactionHeader = [
   {
     field: 'amount',
     headerName: 'Amount',
-    width: 116,
+    flex: 2,
     type: 'number',
     renderCell: params => (
       <Tooltip title={params.value + ' Eth'}>

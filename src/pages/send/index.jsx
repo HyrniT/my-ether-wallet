@@ -62,7 +62,7 @@ const SendPage = () => {
   };
 
   return (
-    <div className='flex items-start justify-center h-screen relative bg-[#F2F4FA] p-10'>
+    <div className='h-screen relative bg-[#F2F4FA] p-10'>
       <Grid container spacing={3}>
         <Grid item xs={8}>
           <Card
