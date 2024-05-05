@@ -1,9 +1,11 @@
+import { useEffect } from 'react';
 import { Chip } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Tooltip from '@mui/material/Tooltip';
 import ViewInArOutlinedIcon from '@mui/icons-material/ViewInArOutlined';
 import DocumentScannerOutlinedIcon from '@mui/icons-material/DocumentScannerOutlined';
+import { useSelector } from 'react-redux';
 
 import { shortenString } from '../../utils';
 
@@ -216,6 +218,15 @@ const transactionData = [
 ];
 
 const EtherscanPage = () => {
+  const navigate = useNavigate();
+  const address = useSelector(state => state.wallet.address);
+
+  useEffect(() => {
+    if (!address) {
+      navigate('/wallet/access');
+    }
+  }, [address, navigate]);
+
   return (
     <div className='my-5 mx-10'>
       <div className='grid grid-cols-2 gap-5'>
