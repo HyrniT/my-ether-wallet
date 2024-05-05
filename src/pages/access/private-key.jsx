@@ -1,19 +1,32 @@
 import { useState } from 'react';
 import styles from './styles.module.css';
-import { TextField, Checkbox, Button } from '@mui/material';
+import { TextField, Checkbox, Button, Snackbar } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined';
 import WarningIcon from '@mui/icons-material/Warning';
 import { orange } from '@mui/material/colors';
+import { getPublicKey } from '../../utils';
+import api from '../../services/api';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import {
+  setPublicKey,
+  setAddress,
+  setBalance,
+} from '../../store/slices/walletSlice';
 
 const AccessWalletPrivateKeyPage = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [value, setValue] = useState('');
-  const [error, setError] = useState(false);
+  const [error, setError] = useState('');
   const [isChecked, setIsChecked] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const handleChange = event => {
     const inputValue = event.target.value;
-    if (inputValue.trim() === '') {
+    if (inputValue.trim() === '' || inputValue.length < 64) {
       setError(true);
     } else {
       setError(false);
@@ -21,8 +34,33 @@ const AccessWalletPrivateKeyPage = () => {
     setValue(inputValue);
   };
 
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
+
   const handleCheckboxChange = event => {
     setIsChecked(event.target.checked);
+  };
+
+  const handleAccessWallet = () => {
+    const publicKey = getPublicKey(value);
+    console.log('Public Key:', publicKey);
+    api
+      .get(`/wallet/${publicKey}`)
+      .then(response => {
+        if (response.data.success) {
+          // Set the public key, address, and balance in the Redux store
+          dispatch(setPublicKey(response.data.data.publicKey));
+          dispatch(setAddress(response.data.data.address));
+          dispatch(setBalance(response.data.data.balance));
+
+          navigate('/wallet/etherscan');
+        }
+      })
+      .catch(error => {
+        setError(error.response.data.message);
+        setOpenSnackbar(true);
+      });
   };
 
   return (
@@ -47,7 +85,7 @@ const AccessWalletPrivateKeyPage = () => {
             value={value}
             onChange={handleChange}
             error={error}
-            helperText={error ? 'This field is required' : ''}
+            helperText={error ? 'Invalid private key' : ''}
             inputProps={{ style: { fontSize: 14 } }}
             InputLabelProps={{ style: { fontSize: 14 } }}
           />
@@ -58,12 +96,6 @@ const AccessWalletPrivateKeyPage = () => {
                 checkedIcon={<CheckCircleIcon />}
                 checked={isChecked}
                 onChange={handleCheckboxChange}
-                // sx={{
-                //   color: green['A200'],
-                //   '&.Mui-checked': {
-                //     color: green['A200'],
-                //   },
-                // }}
               />
               <span className='text-gray-500'>
                 To access my wallet, I accept&nbsp;
@@ -82,6 +114,7 @@ const AccessWalletPrivateKeyPage = () => {
               fullWidth
               size='large'
               disabled={error || value.trim() === '' || !isChecked}
+              onClick={handleAccessWallet}
             >
               Access Wallet
             </Button>
@@ -107,6 +140,16 @@ const AccessWalletPrivateKeyPage = () => {
           </div>
         </div>
       </div>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={2000}
+        onClose={handleCloseSnackbar}
+        message={error}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+      />
     </div>
   );
 };

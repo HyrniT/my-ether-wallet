@@ -4,6 +4,7 @@ import { formatMoney } from './formatMoney';
 import { maskString } from './maskString';
 import { ethToUsd, usdToEth } from './convertConcurrency';
 import { roundNumber } from './roundNumber';
+import { getPublicKey } from './getPublicKey';
 
 export {
   formatTimeAgo,
@@ -14,4 +15,5 @@ export {
   ethToUsd,
   usdToEth,
   roundNumber,
+  getPublicKey,
 };

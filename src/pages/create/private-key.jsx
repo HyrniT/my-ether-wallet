@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './styles.module.css';
 import { TextField, Button, Snackbar } from '@mui/material';
@@ -6,16 +6,22 @@ import WarningIcon from '@mui/icons-material/Warning';
 import { orange } from '@mui/material/colors';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { maskString } from '../../utils/maskString';
-
-const privateKey =
-  '7b6f741641269ee9ad011362ea59a6666878f15cb33ec0fcc7d7bb3e3121e166';
+import api from '../../services/api';
 
 const CreateWalletPrivateKeyPage = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [privateKey, setPrivateKey] = useState('');
 
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
   };
+
+  useEffect(() => {
+    api
+      .get('/wallet/create')
+      .then(response => setPrivateKey(response.data.data?.privateKey))
+      .catch(error => console.error('Error fetching private key:', error));
+  }, []);
 
   const maskedPrivateKey = maskString(privateKey, 10, 40);
 
