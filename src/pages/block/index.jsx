@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   Card,
   CardContent,
@@ -10,6 +10,8 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
 import { formatTimeAgo, formatTimeUTC } from '../../utils';
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 const blockInfo = {
   status: 'Finalized',
@@ -20,6 +22,15 @@ const blockInfo = {
 
 const BlockDetailsPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const address = useSelector(state => state.wallet.address);
+
+  useEffect(() => {
+    if (!address) {
+      navigate('/wallet/access');
+    }
+  }, [address, navigate]);
+
   return (
     <div className='flex items-start justify-center h-screen relative bg-[#F2F4FA]'>
       <div className='absolute top-3 left-3'>
