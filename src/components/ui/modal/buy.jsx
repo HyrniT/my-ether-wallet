@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   Modal,
   IconButton,
@@ -14,6 +15,8 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import TabPanel from '../tab';
 import { usdToEth, roundNumber } from '../../../utils';
+import api from '../../../services/api';
+import { setBalance } from '../../../store/slices/walletSlice';
 
 const style = {
   position: 'absolute',
@@ -35,12 +38,16 @@ function a11yProps(index) {
 }
 
 const BuyModal = ({ open, onClose }) => {
+  const dispatch = useDispatch();
   const [value, setValue] = useState(0); // for modal tabs
   const [amountUsd, setAmountUsd] = useState('');
   const [amountEth, setAmountEth] = useState('');
-  const [error, setError] = useState(false);
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+
+  const publicKey = useSelector(state => state.wallet.publicKey);
+  const balance = useSelector(state => state.wallet.balance);
 
   const amountEthRef = useRef(null);
 
@@ -77,15 +84,23 @@ const BuyModal = ({ open, onClose }) => {
     onClose();
   };
 
-  const handleBuy = () => {
+  const handleBuy = async () => {
     setLoading(true);
-    // request API here
-    setTimeout(() => {
+    try {
+      const response = await api.patch(`/wallet/balance/${publicKey}`, {
+        balance: balance + parseFloat(amountEthRef.current.value),
+      });
+      if (response.data.success) {
+        dispatch(setBalance(balance + parseFloat(amountEthRef.current.value)));
+      }
+    } catch (error) {
+      setError(error.message);
+    } finally {
       setLoading(false);
+      setOpenSnackbar(true);
       setAmountUsd('');
       onClose();
-      setOpenSnackbar(true);
-    }, 2000);
+    }
   };
 
   return (
@@ -195,7 +210,7 @@ const BuyModal = ({ open, onClose }) => {
         open={openSnackbar}
         autoHideDuration={2000}
         onClose={handleCloseSnackbar}
-        message='Buy successfully!'
+        message={error ? error : 'Transaction successful!'}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'right',

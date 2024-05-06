@@ -228,7 +228,7 @@ const EtherscanPage = () => {
   }, [address, navigate]);
 
   return (
-    <div className='my-5 mx-10'>
+    <div className='mt-5 mx-10 h-screen'>
       <div className='grid grid-cols-2 gap-5'>
         <div className='col-span-1'>
           <div className='flex'>
