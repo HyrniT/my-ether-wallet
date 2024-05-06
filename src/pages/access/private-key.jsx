@@ -44,7 +44,6 @@ const AccessWalletPrivateKeyPage = () => {
 
   const handleAccessWallet = () => {
     const publicKey = getPublicKey(value);
-    console.log('Public Key:', publicKey);
     api
       .get(`/wallet/${publicKey}`)
       .then(response => {
@@ -58,7 +57,7 @@ const AccessWalletPrivateKeyPage = () => {
         }
       })
       .catch(error => {
-        setError(error.response.data.message);
+        setError(error.message);
         setOpenSnackbar(true);
       });
   };

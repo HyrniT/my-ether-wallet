@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Card,
   CardContent,
@@ -9,6 +9,8 @@ import {
   InputAdornment,
 } from '@mui/material';
 import BuyModal from '../../components/ui/modal/buy';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const walletInfo = {
   balance: 2.5,
@@ -23,6 +25,14 @@ const SendPage = () => {
   const [errors, setErrors] = useState(['']);
   const [errorAddress, setErrorAddress] = useState(['']);
   const [openModal, setOpenModal] = useState(false);
+  const navigate = useNavigate();
+  const address = useSelector(state => state.wallet.address);
+
+  useEffect(() => {
+    if (!address) {
+      navigate('/wallet/access');
+    }
+  }, [address, navigate]);
 
   const handleAmountChange = event => {
     const newAmount = event.target.value;
