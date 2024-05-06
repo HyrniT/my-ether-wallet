@@ -7,61 +7,38 @@ import {
   MenuItem,
   Button,
   InputAdornment,
+  Snackbar,
 } from '@mui/material';
 import BuyModal from '../../components/ui/modal/buy';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-
-const walletInfo = {
-  balance: 2.5,
-  address: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-};
+import { useSelector, useDispatch } from 'react-redux';
+import { roundNumber } from '../../utils';
+import api from '../../services/api';
+import { setBalance } from '../../store/slices/walletSlice';
 
 const lastethBlock = 19;
+const fee = 0.000256;
 
 const SendPage = () => {
   const [amount, setAmount] = useState('');
   const [toAddress, setToAddress] = useState('');
   const [errors, setErrors] = useState(['']);
+  const [error, setError] = useState('');
   const [errorAddress, setErrorAddress] = useState(['']);
   const [openModal, setOpenModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const address = useSelector(state => state.wallet.address);
+  const balance = useSelector(state => state.wallet.balance);
 
   useEffect(() => {
     if (!address) {
-      navigate('/wallet/access');
+      navigate('/wallet/access/software/private-key');
     }
   }, [address, navigate]);
-
-  const handleAmountChange = event => {
-    const newAmount = event.target.value;
-    const newErrors = [];
-
-    if (newAmount === '' || parseFloat(newAmount) === 0) {
-      newErrors.push('Amount must be greater than 0');
-    } else if (isNaN(newAmount)) {
-      newErrors.push('Amount must be a number');
-    } else if (parseFloat(newAmount) > walletInfo.balance - 0.000256) {
-      newErrors.push('Amount must be less than balance');
-    }
-
-    setAmount(newAmount);
-    setErrors(newErrors);
-  };
-
-  const handleAddressChange = event => {
-    const newAddress = event.target.value;
-    const newAddressErrors = [];
-
-    if (newAddress.length !== 42 || !newAddress.startsWith('0x')) {
-      // setErrorAddress(true);
-      newAddressErrors.push('Invalid address');
-    }
-
-    setToAddress(newAddress);
-    setErrorAddress(newAddressErrors);
-  };
 
   const handleOpenModal = () => {
     setOpenModal(true);
@@ -69,6 +46,63 @@ const SendPage = () => {
 
   const handleCloseModal = () => {
     setOpenModal(false);
+  };
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
+
+  useEffect(() => {
+    const newErrors = [];
+
+    if (amount === '' || parseFloat(amount) === 0) {
+      newErrors.push('Amount must be greater than 0');
+    } else if (isNaN(amount)) {
+      newErrors.push('Amount must be a number');
+    } else if (parseFloat(amount) > balance - fee) {
+      newErrors.push('Amount must be less than balance');
+    }
+
+    setErrors(newErrors);
+  }, [amount, balance]);
+
+  useEffect(() => {
+    const newAddressErrors = [];
+
+    if (toAddress.length !== 42 || !toAddress.startsWith('0x')) {
+      newAddressErrors.push('Invalid address');
+    }
+
+    setErrorAddress(newAddressErrors);
+  }, [toAddress]);
+
+  const handleAmountChange = event => {
+    setAmount(event.target.value);
+  };
+
+  const handleAddressChange = event => {
+    setToAddress(event.target.value);
+  };
+
+  const handleSend = async () => {
+    setLoading(true);
+    try {
+      const response = await api.post(`/wallet/send`, {
+        sender: address,
+        receiver: toAddress,
+        amount: parseFloat(amount) - fee,
+      });
+      if (response.data.success) {
+        dispatch(setBalance(balance - parseFloat(amount) - fee));
+        setAmount('');
+        setToAddress('');
+      }
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+      setOpenSnackbar(true);
+    }
   };
 
   return (
@@ -167,11 +201,17 @@ const SendPage = () => {
                         <div className='font-bold text-md mt-10'>Total</div>
                         <div className='flex justify-end'>
                           <div className='font-bold text-md'>
-                            {`${parseFloat(amount) + 0.000256} ETH`}
+                            {`${roundNumber(parseFloat(amount) + fee)} ETH`}
                           </div>
                         </div>
                         <div className='flex justify-center w-full'>
-                          <Button variant='contained'>Send</Button>
+                          <Button
+                            variant='contained'
+                            onClick={handleSend}
+                            disabled={loading}
+                          >
+                            {loading ? 'Sending...' : 'Send'}
+                          </Button>
                         </div>
                       </>
                     )}
@@ -207,7 +247,7 @@ const SendPage = () => {
               <div className='p-3'>
                 <h1 className='text-xl font-bold mb-3'>My Tokens</h1>
                 <div className='flex items-center justify-between mt-5'>
-                  <div className='text-sm'>{walletInfo.balance} tokens</div>
+                  <div className='text-sm'>{balance} tokens</div>
                   <div
                     className='text-sm font-bold text-[#1976D2] cursor-pointer'
                     onClick={handleOpenModal}
@@ -221,6 +261,16 @@ const SendPage = () => {
         </Grid>
       </Grid>
       <BuyModal open={openModal} onClose={handleCloseModal} />
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={2000}
+        onClose={handleCloseSnackbar}
+        message={error ? error : 'Sent successful!'}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+      />
     </div>
   );
 };

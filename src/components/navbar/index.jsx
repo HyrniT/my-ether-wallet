@@ -67,7 +67,7 @@ const Navbar = () => {
         </div>
       </Link>
       <div
-        className='flex items-center justify-start px-4 hover:bg-[#204C6F]'
+        className='flex items-center justify-start px-4 hover:bg-[#204C6F] hover:cursor-pointer'
         style={unactiveStyle}
       >
         <div className='p-4'>
@@ -81,7 +81,7 @@ const Navbar = () => {
         <div className='text-sm tracking-tight'>Receive</div>
       </div>
       <div
-        className='flex items-center justify-start px-4 hover:bg-[#204C6F]'
+        className='flex items-center justify-start px-4 hover:bg-[#204C6F] hover:cursor-pointer'
         style={unactiveStyle}
         onClick={handleOpenModal}
       >

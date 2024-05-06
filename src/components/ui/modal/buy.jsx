@@ -98,8 +98,7 @@ const BuyModal = ({ open, onClose }) => {
     } finally {
       setLoading(false);
       setOpenSnackbar(true);
-      setAmountUsd('');
-      onClose();
+      handleClose();
     }
   };
 

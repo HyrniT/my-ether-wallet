@@ -27,7 +27,7 @@ const BlockDetailsPage = () => {
 
   useEffect(() => {
     if (!address) {
-      navigate('/wallet/access');
+      navigate('/wallet/access/software/private-key');
     }
   }, [address, navigate]);
 

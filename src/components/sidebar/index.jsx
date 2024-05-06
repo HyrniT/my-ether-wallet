@@ -5,7 +5,7 @@ import { IconButton, Snackbar } from '@mui/material';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useSelector } from 'react-redux';
 import Navbar from '../navbar';
-import { maskString, formatMoney, ethToUsd } from '../../utils';
+import { maskString, formatMoney, ethToUsd, roundNumber } from '../../utils';
 
 const Sidebar = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -38,7 +38,7 @@ const Sidebar = () => {
             </h1>
           </div>
           <div className='absolute bottom-0 left-0 p-4 text-white'>
-            <div className='text-sm'>{balance} ETH</div>
+            <div className='text-sm'>{roundNumber(balance)} ETH</div>
           </div>
           <div className='absolute bottom-0 right-0 p-4'>
             <CopyToClipboard
