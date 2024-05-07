@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import {
@@ -10,27 +11,32 @@ import {
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
+// import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+// import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
 import { formatTimeAgo, formatTimeUTC } from '../../utils';
-import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-
-const transactionInfo = {
-  status: 'Pending',
-  blockHeight: 1,
-  blockStatus: 'Pending',
-  timestamp: 1714359097121,
-  from: '0x1234567890abcdef',
-  to: '0xabcdef1234567890',
-  amount: 1.5,
-  fee: 0.00042,
-};
+import api from '../../services/api';
 
 const TransactionDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const address = useSelector(state => state.wallet.address);
+
+  const [transactionInfo, setTransactionInfo] = useState({});
+
+  useEffect(() => {
+    api
+      .get(`/transaction/${id}`)
+      .then(response => {
+        if (response.data.success) {
+          console.log(response.data.data);
+          setTransactionInfo(response.data.data);
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }, [id]);
 
   useEffect(() => {
     if (!address) {
@@ -85,16 +91,18 @@ const TransactionDetailsPage = () => {
                 </Tooltip>
               )}
             </Grid>
-            <Grid item xs={4}>
-              <div className='flex items-center gap-2'>
-                <Tooltip title='The finality status of the block'>
-                  <HelpOutlineOutlinedIcon fontSize='small' />
-                </Tooltip>
-                <div className=''>Block:</div>
-              </div>
-            </Grid>
-            <Grid item xs={8}>
-              {transactionInfo.blockStatus === 'Finalized' ? (
+            {transactionInfo.blockId && (
+              <>
+                <Grid item xs={4}>
+                  <div className='flex items-center gap-2'>
+                    <Tooltip title='The finality status of the block'>
+                      <HelpOutlineOutlinedIcon fontSize='small' />
+                    </Tooltip>
+                    <div className=''>Block:</div>
+                  </div>
+                </Grid>
+                <Grid item xs={8}>
+                  {/* {transactionInfo.blockStatus === 'Finalized' ? (
                 <CheckCircleIcon fontSize='small' color='success' />
               ) : (
                 <Tooltip title='The block is still being processed'>
@@ -103,14 +111,16 @@ const TransactionDetailsPage = () => {
                     sx={{ color: 'gray' }}
                   />
                 </Tooltip>
-              )}{' '}
-              <Link
-                to={`/wallet/etherscan/block/${transactionInfo.blockHeight}`}
-                className='underline underline-offset-2 font-bold text-[#066A9C]'
-              >
-                {transactionInfo.blockHeight}
-              </Link>
-            </Grid>
+              )}{' '} */}
+                  <Link
+                    to={`/wallet/etherscan/block/${transactionInfo.blockId}`}
+                    className='underline underline-offset-2 font-bold text-[#066A9C]'
+                  >
+                    {transactionInfo.blockId}
+                  </Link>
+                </Grid>
+              </>
+            )}
             <Grid item xs={4}>
               <div className='flex items-center gap-2'>
                 <Tooltip title='The date and time at which a transaction is produced'>
@@ -131,7 +141,7 @@ const TransactionDetailsPage = () => {
               </div>
             </Grid>
             <Grid item xs={8}>
-              <div className=''>{transactionInfo.from}</div>
+              <div className=''>{transactionInfo.fromAddress}</div>
             </Grid>
             <Grid item xs={4}>
               <div className='flex items-center gap-2'>
@@ -142,7 +152,7 @@ const TransactionDetailsPage = () => {
               </div>
             </Grid>
             <Grid item xs={8}>
-              <div className=''>{transactionInfo.to}</div>
+              <div className=''>{transactionInfo.toAddress}</div>
             </Grid>
             <Grid item xs={4}>
               <div className='flex items-center gap-2'>
@@ -168,11 +178,7 @@ const TransactionDetailsPage = () => {
               </div>
             </Grid>
             <Grid item xs={8}>
-              <Chip
-                label={transactionInfo.fee + ' Eth'}
-                size='small'
-                variant='outlined'
-              />
+              <Chip label={0.000256 + ' Eth'} size='small' variant='outlined' />
             </Grid>
           </Grid>
         </CardContent>

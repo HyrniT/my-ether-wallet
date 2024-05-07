@@ -10,6 +10,7 @@ import api from '../../services/api';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import {
+  setPrivateKey,
   setPublicKey,
   setAddress,
   setBalance,
@@ -48,6 +49,7 @@ const AccessWalletPrivateKeyPage = () => {
       .get(`/wallet/${publicKey}`)
       .then(response => {
         if (response.data.success) {
+          dispatch(setPrivateKey(value));
           // Set the public key, address, and balance in the Redux store
           dispatch(setPublicKey(response.data.data.publicKey));
           dispatch(setAddress(response.data.data.address));

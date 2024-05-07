@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Chip } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { Link, useNavigate } from 'react-router-dom';
@@ -6,6 +6,8 @@ import Tooltip from '@mui/material/Tooltip';
 import ViewInArOutlinedIcon from '@mui/icons-material/ViewInArOutlined';
 import DocumentScannerOutlinedIcon from '@mui/icons-material/DocumentScannerOutlined';
 import { useSelector } from 'react-redux';
+import api from '../../services/api';
+import { formatTimeAgo } from '../../utils';
 
 import { shortenString } from '../../utils';
 
@@ -26,7 +28,7 @@ const blockHeader = [
         </Tooltip>
         <span className='text-gray-500 text-[13px]'>
           {' '}
-          ({params.row.timestamp})
+          ({formatTimeAgo(params.row.timestamp)})
         </span>
       </Link>
     ),
@@ -50,61 +52,6 @@ const blockHeader = [
   {
     field: 'blockReward',
     headerName: 'Block Reward',
-    flex: 2,
-    type: 'number',
-    renderCell: params => (
-      <Tooltip title={params.value + ' Eth'}>
-        <Chip label={params.value + ' Eth'} size='small' variant='outlined' />
-      </Tooltip>
-    ),
-  },
-];
-
-const transactionHeader = [
-  {
-    field: 'id',
-    headerName: 'Transaction Hash',
-    flex: 3,
-    renderCell: params => (
-      <Link to={`/wallet/etherscan/transaction/${params.value}`}>
-        <span className='mr-2'>
-          <DocumentScannerOutlinedIcon />
-        </span>
-        <Tooltip title={params.value}>
-          <span className='underline underline-offset-2 font-bold text-[#066A9C] truncate'>
-            {shortenString(params.value, 14)}
-          </span>
-        </Tooltip>
-        <span className='text-gray-500 text-[13px]'>
-          {' '}
-          ({params.row.timestamp})
-        </span>
-      </Link>
-    ),
-  },
-  {
-    field: 'from',
-    headerName: 'From',
-    flex: 1,
-    renderCell: params => (
-      <Tooltip title={'From: ' + params.value}>
-        {shortenString(params.value)}
-      </Tooltip>
-    ),
-  },
-  {
-    field: 'to',
-    headerName: 'To',
-    flex: 1,
-    renderCell: params => (
-      <Tooltip title={'To: ' + params.value}>
-        {shortenString(params.value)}
-      </Tooltip>
-    ),
-  },
-  {
-    field: 'amount',
-    headerName: 'Amount',
     flex: 2,
     type: 'number',
     renderCell: params => (
@@ -172,54 +119,79 @@ const blockData = [
   },
 ];
 
-const transactionData = [
+const transactionHeader = [
   {
-    id: '0x1234567890abcdef',
-    from: '0x1234567890abcdef',
-    to: '0x1234567890abcdef',
-    amount: 1,
-    timestamp: '1m ago',
+    field: 'hash',
+    headerName: 'Transaction Hash',
+    flex: 3,
+    renderCell: params => (
+      <Link to={`/wallet/etherscan/transaction/${params.value}`}>
+        <span className='mr-2'>
+          <DocumentScannerOutlinedIcon />
+        </span>
+        <Tooltip title={params.value}>
+          <span className='underline underline-offset-2 font-bold text-[#066A9C] truncate'>
+            {shortenString(params.value, 14)}
+          </span>
+        </Tooltip>
+        <span className='text-gray-500 text-[13px]'>
+          {' '}
+          ({formatTimeAgo(params.row.timestamp)})
+        </span>
+      </Link>
+    ),
   },
   {
-    id: '0x1234567890abcdef',
-    from: '0x1234567890abcdef',
-    to: '0x1234567890abcdef',
-    amount: 2,
-    timestamp: '1m ago',
+    field: 'fromAddress',
+    headerName: 'From',
+    flex: 1,
+    renderCell: params => (
+      <Tooltip title={'From: ' + params.value}>
+        {shortenString(params.value)}
+      </Tooltip>
+    ),
   },
   {
-    id: '0x1234567890abcdef',
-    from: '0x1234567890abcdef',
-    to: '0x1234567890abcdef',
-    amount: 3,
-    timestamp: '1m ago',
+    field: 'toAddress',
+    headerName: 'To',
+    flex: 1,
+    renderCell: params => (
+      <Tooltip title={'To: ' + params.value}>
+        {shortenString(params.value)}
+      </Tooltip>
+    ),
   },
   {
-    id: '0x1234567890abcdef',
-    from: '0x1234567890abcdef',
-    to: '0x1234567890abcdef',
-    amount: 4,
-    timestamp: '1m ago',
-  },
-  {
-    id: '0x1234567890abcdef',
-    from: '0x1234567890abcdef',
-    to: '0x1234567890abcdef',
-    amount: 5,
-    timestamp: '1m ago',
-  },
-  {
-    id: '0x1234567890abcdef',
-    from: '0x1234567890abcdef',
-    to: '0x1234567890abcdef',
-    amount: 6,
-    timestamp: '1m ago',
+    field: 'amount',
+    headerName: 'Amount',
+    flex: 2,
+    type: 'number',
+    renderCell: params => (
+      <Tooltip title={params.value + ' Eth'}>
+        <Chip label={params.value + ' Eth'} size='small' variant='outlined' />
+      </Tooltip>
+    ),
   },
 ];
 
 const EtherscanPage = () => {
   const navigate = useNavigate();
   const address = useSelector(state => state.wallet.address);
+
+  const [transactionData, setTransactionData] = useState([]);
+  useEffect(() => {
+    api
+      .get(`/transaction`)
+      .then(response => {
+        if (response.data.success) {
+          console.log(response.data.data);
+          setTransactionData(response.data.data);
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }, []);
 
   useEffect(() => {
     if (!address) {

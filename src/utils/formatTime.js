@@ -1,4 +1,5 @@
-function formatTimeAgo(timestamp) {
+function formatTimeAgo(dateUTC) {
+  const timestamp = Date.parse(dateUTC);
   const now = Date.now();
   const diff = now - timestamp;
 
@@ -30,20 +31,20 @@ function formatTimeAgo(timestamp) {
 
 function formatTimeUTC(timestamp) {
   const date = new Date(timestamp);
-  const options = {
-    year: 'numeric',
-    month: 'short',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: true,
-    timeZoneName: 'short',
-  };
-  const formatter = new Intl.DateTimeFormat('en-US', options);
-  const formattedDate = formatter.format(date);
 
-  return formattedDate + ' +UTC';
+  const month = date.toLocaleString('en-US', { month: 'short' });
+  const day = date.getDate();
+  const year = date.getFullYear();
+  const hour = date.getHours();
+  const minute = date.getMinutes();
+  const second = date.getSeconds();
+  const ampm = hour >= 12 ? 'PM' : 'AM';
+  const hour12 = hour % 12 || 12;
+  // const timeZone = date.toISOString().substring(19);
+
+  const formattedDate = `${month}-${day}-${year} ${hour12}:${minute}:${second} ${ampm} +UTC`;
+
+  return formattedDate;
 }
 
 export { formatTimeAgo, formatTimeUTC };

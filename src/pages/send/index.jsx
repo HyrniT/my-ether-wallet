@@ -31,6 +31,7 @@ const SendPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const privateKey = useSelector(state => state.wallet.privateKey);
   const address = useSelector(state => state.wallet.address);
   const balance = useSelector(state => state.wallet.balance);
 
@@ -88,6 +89,7 @@ const SendPage = () => {
     setLoading(true);
     try {
       const response = await api.post(`/wallet/send`, {
+        privateKey: privateKey,
         sender: address,
         receiver: toAddress,
         amount: parseFloat(amount) - fee,
