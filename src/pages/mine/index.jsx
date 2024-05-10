@@ -12,11 +12,13 @@ import {
 import { DataGrid } from '@mui/x-data-grid';
 import DocumentScannerOutlinedIcon from '@mui/icons-material/DocumentScannerOutlined';
 import HardwareIcon from '@mui/icons-material/Hardware';
-import { shortenString } from '../../utils';
+import { shortenString, formatTimeAgo } from '../../utils';
+// import * as MineWorker from '../../utils/mineWorker';
+import api from '../../services/api';
 
 const transactionHeader = [
   {
-    field: 'id',
+    field: 'hash',
     headerName: 'Transaction Hash',
     flex: 2,
     renderCell: params => (
@@ -26,12 +28,12 @@ const transactionHeader = [
         </span>
         <Tooltip title={params.value}>
           <span className='underline underline-offset-2 font-bold text-[#066A9C] truncate'>
-            {shortenString(params.value, 24)}
+            {shortenString(params.value, 20)}
           </span>
         </Tooltip>
         <span className='text-gray-500 text-[13px]'>
           {' '}
-          ({params.row.timestamp})
+          ({formatTimeAgo(params.row.timestamp)})
         </span>
       </Link>
     ),
@@ -56,24 +58,24 @@ const transactionHeader = [
     field: 'fee',
     headerName: 'Fee',
     flex: 1,
-    renderCell: params => (
-      <Tooltip title={params.value + ' Eth'}>
-        <Chip label={params.value + ' Eth'} size='small' variant='outlined' />
+    renderCell: () => (
+      <Tooltip title='0.000256 Eth'>
+        <Chip label='0.000256 Eth' size='small' variant='outlined' />
       </Tooltip>
     ),
   },
   {
-    field: 'from',
+    field: 'fromAddress',
     headerName: 'From',
     flex: 1,
     renderCell: params => (
       <Tooltip title={'From: ' + params.value}>
-        {shortenString(params.value, 16)}
+        {shortenString(params.value ?? 'Unknown', 16)}
       </Tooltip>
     ),
   },
   {
-    field: 'to',
+    field: 'toAddress',
     headerName: 'To',
     flex: 1,
     renderCell: params => (
@@ -95,68 +97,38 @@ const transactionHeader = [
   },
 ];
 
-const transactionData = [
-  {
-    id: '0x1234567890abcdef',
-    from: '0x1234567890abcdef',
-    to: '0x1234567890abcdef',
-    amount: 1,
-    timestamp: '1m ago',
-    fee: 0.000256,
-    status: 'Pending',
-  },
-  {
-    id: '0x1234567890abcdef',
-    from: '0x1234567890abcdef',
-    to: '0x1234567890abcdef',
-    amount: 2,
-    timestamp: '1m ago',
-    fee: 0.000256,
-    status: 'Pending',
-  },
-  {
-    id: '0x1234567890abcdef',
-    from: '0x1234567890abcdef',
-    to: '0x1234567890abcdef',
-    amount: 3,
-    timestamp: '1m ago',
-    fee: 0.000256,
-    status: 'Pending',
-  },
-  {
-    id: '0x1234567890abcdef',
-    from: '0x1234567890abcdef',
-    to: '0x1234567890abcdef',
-    amount: 4,
-    timestamp: '1m ago',
-    fee: 0.000256,
-    status: 'Pending',
-  },
-  {
-    id: '0x1234567890abcdef',
-    from: '0x1234567890abcdef',
-    to: '0x1234567890abcdef',
-    amount: 5,
-    timestamp: '1m ago',
-    fee: 0.000256,
-    status: 'Pending',
-  },
-  {
-    id: '0x1234567890abcdef',
-    from: '0x1234567890abcdef',
-    to: '0x1234567890abcdef',
-    amount: 6,
-    timestamp: '1m ago',
-    fee: 0.000256,
-    status: 'Pending',
-  },
-];
-
 const MinePage = () => {
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [transactionData, setTransactionData] = useState([]);
+  // const [latestBlock, setLatestBlock] = useState({});
+  // const [mineWorker, setMineWorker] = useState(null);
+
   const navigate = useNavigate();
   const address = useSelector(state => state.wallet.address);
+  const privateKey = useSelector(state => state.wallet.privateKey);
+
+  useEffect(() => {
+    // api.get(`/block/latest`).then(response => {
+    //   if (response.data.success) {
+    //     setLatestBlock(response.data.data);
+    //   } else {
+    //     console.error(response.data.message);
+    //   }
+    // });
+    api
+      .get(`/transaction/pending`)
+      .then(response => {
+        if (response.data.success) {
+          console.log(response.data.data);
+          setTransactionData(response.data.data);
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }, []);
 
   useEffect(() => {
     if (!address) {
@@ -164,14 +136,31 @@ const MinePage = () => {
     }
   }, [address, navigate]);
 
-  // use redux later
   const handleMine = () => {
     setLoading(true);
-    // request API here
-    setTimeout(() => {
-      setLoading(false);
-      setOpenSnackbar(true);
-    }, 2000);
+    api
+      .post(`/block/mine`, {
+        address: address,
+        privateKey: privateKey,
+      })
+      .then(response => {
+        if (response.data.success) {
+          setOpenSnackbar(true);
+          setLoading(false);
+          api.get(`/transaction/pending`).then(response => {
+            if (response.data.success) {
+              setTransactionData(response.data.data);
+            }
+          });
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        setLoading(false);
+        console.log(error.response.data.message);
+        setError(error.response.data.message);
+        setOpenSnackbar(true);
+      });
   };
 
   const handleCloseSnackbar = () => {
@@ -179,7 +168,7 @@ const MinePage = () => {
   };
 
   return (
-    <div className='flex items-center justify-center w-full h-screen relative bg-[#F2F4FA] p-5'>
+    <div className='flex items-start justify-center w-full h-screen relative bg-[#F2F4FA] p-5'>
       <Card variant='outlined' className='w-full'>
         <CardContent>
           <div className='flex items-center justify-between mb-5'>
@@ -208,6 +197,7 @@ const MinePage = () => {
                   paginationModel: { page: 0, pageSize: 5 },
                 },
               }}
+              autoHeight
               pageSizeOptions={[5]}
               disableColumnMenu
               disableColumnFilter
@@ -221,7 +211,7 @@ const MinePage = () => {
         open={openSnackbar}
         autoHideDuration={2000}
         onClose={handleCloseSnackbar}
-        message='Mining successfully!'
+        message={error ? error : 'Mined successful!'}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'right',

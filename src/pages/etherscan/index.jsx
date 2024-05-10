@@ -7,9 +7,7 @@ import ViewInArOutlinedIcon from '@mui/icons-material/ViewInArOutlined';
 import DocumentScannerOutlinedIcon from '@mui/icons-material/DocumentScannerOutlined';
 import { useSelector } from 'react-redux';
 import api from '../../services/api';
-import { formatTimeAgo } from '../../utils';
-
-import { shortenString } from '../../utils';
+import { shortenString, formatTimeAgo } from '../../utils';
 
 const blockHeader = [
   {
@@ -123,7 +121,7 @@ const transactionHeader = [
   {
     field: 'hash',
     headerName: 'Transaction Hash',
-    flex: 3,
+    flex: 2,
     renderCell: params => (
       <Link to={`/wallet/etherscan/transaction/${params.value}`}>
         <span className='mr-2'>
@@ -131,7 +129,7 @@ const transactionHeader = [
         </span>
         <Tooltip title={params.value}>
           <span className='underline underline-offset-2 font-bold text-[#066A9C] truncate'>
-            {shortenString(params.value, 14)}
+            {shortenString(params.value, 10)}
           </span>
         </Tooltip>
         <span className='text-gray-500 text-[13px]'>
@@ -147,7 +145,7 @@ const transactionHeader = [
     flex: 1,
     renderCell: params => (
       <Tooltip title={'From: ' + params.value}>
-        {shortenString(params.value)}
+        {shortenString(params.value ?? 'Unknown')}
       </Tooltip>
     ),
   },
@@ -164,7 +162,7 @@ const transactionHeader = [
   {
     field: 'amount',
     headerName: 'Amount',
-    flex: 2,
+    flex: 1,
     type: 'number',
     renderCell: params => (
       <Tooltip title={params.value + ' Eth'}>
@@ -217,6 +215,7 @@ const EtherscanPage = () => {
                   paginationModel: { page: 0, pageSize: 5 },
                 },
               }}
+              autoHeight
               pageSizeOptions={[5]}
               disableColumnMenu
               disableColumnFilter
@@ -240,6 +239,7 @@ const EtherscanPage = () => {
                   paginationModel: { page: 0, pageSize: 5 },
                 },
               }}
+              autoHeight
               pageSizeOptions={[5]}
               disableColumnMenu
               disableColumnFilter

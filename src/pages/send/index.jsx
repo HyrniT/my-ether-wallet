@@ -88,14 +88,14 @@ const SendPage = () => {
   const handleSend = async () => {
     setLoading(true);
     try {
-      const response = await api.post(`/wallet/send`, {
+      const response = await api.post(`/transaction/send`, {
         privateKey: privateKey,
         sender: address,
         receiver: toAddress,
         amount: parseFloat(amount) - fee,
       });
       if (response.data.success) {
-        dispatch(setBalance(balance - parseFloat(amount) - fee));
+        // dispatch(setBalance(balance - parseFloat(amount) - fee));
         setAmount('');
         setToAddress('');
       }

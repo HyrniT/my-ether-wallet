@@ -141,7 +141,7 @@ const TransactionDetailsPage = () => {
               </div>
             </Grid>
             <Grid item xs={8}>
-              <div className=''>{transactionInfo.fromAddress}</div>
+              <div className=''>{transactionInfo.fromAddress ?? 'Unknown'}</div>
             </Grid>
             <Grid item xs={4}>
               <div className='flex items-center gap-2'>
