@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   Chip,
   Tooltip,
@@ -15,6 +15,7 @@ import HardwareIcon from '@mui/icons-material/Hardware';
 import { shortenString, formatTimeAgo } from '../../utils';
 // import * as MineWorker from '../../utils/mineWorker';
 import api from '../../services/api';
+import { setBalance } from '../../store/slices/walletSlice';
 
 const transactionHeader = [
   {
@@ -106,6 +107,8 @@ const MinePage = () => {
   // const [mineWorker, setMineWorker] = useState(null);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const address = useSelector(state => state.wallet.address);
   const privateKey = useSelector(state => state.wallet.privateKey);
 
@@ -121,7 +124,6 @@ const MinePage = () => {
       .get(`/transaction/pending`)
       .then(response => {
         if (response.data.success) {
-          console.log(response.data.data);
           setTransactionData(response.data.data);
         }
       })
@@ -145,19 +147,24 @@ const MinePage = () => {
       })
       .then(response => {
         if (response.data.success) {
+          dispatch(setBalance(response.data.data.balance));
           setOpenSnackbar(true);
           setLoading(false);
-          api.get(`/transaction/pending`).then(response => {
-            if (response.data.success) {
-              setTransactionData(response.data.data);
-            }
-          });
+          api
+            .get(`/transaction/pending`)
+            .then(response => {
+              if (response.data.success) {
+                setTransactionData(response.data.data);
+              }
+            })
+            .catch(error => {
+              console.error(error);
+            });
         }
       })
       .catch(error => {
         console.error(error);
         setLoading(false);
-        console.log(error.response.data.message);
         setError(error.response.data.message);
         setOpenSnackbar(true);
       });

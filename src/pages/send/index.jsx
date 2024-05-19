@@ -29,7 +29,7 @@ const SendPage = () => {
   const [loading, setLoading] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   const privateKey = useSelector(state => state.wallet.privateKey);
   const address = useSelector(state => state.wallet.address);
@@ -92,7 +92,7 @@ const SendPage = () => {
         privateKey: privateKey,
         sender: address,
         receiver: toAddress,
-        amount: parseFloat(amount) - fee,
+        amount: parseFloat(amount),
       });
       if (response.data.success) {
         // dispatch(setBalance(balance - parseFloat(amount) - fee));
