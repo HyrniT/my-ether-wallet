@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   Card,
@@ -12,18 +13,35 @@ import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
 import { formatTimeAgo, formatTimeUTC } from '../../utils';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import api from '../../services/api';
 
-const blockInfo = {
-  status: 'Finalized',
-  timestamp: 1714359097121,
-  transactions: '3 transactions',
-  blockReward: '2.5',
-};
+// const blockInfo = {
+//   status: 'Finalized',
+//   timestamp: 1714359097121,
+//   transactions: '3 transactions',
+//   blockReward: '2.5',
+// };
 
 const BlockDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const address = useSelector(state => state.wallet.address);
+
+  const [blockInfo, setBlockInfo] = useState({});
+
+  useEffect(() => {
+    api
+      .get(`/block/${id}`)
+      .then(response => {
+        if (response.data.success) {
+          console.log(response.data.data);
+          setBlockInfo(response.data.data);
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }, [id]);
 
   useEffect(() => {
     if (!address) {
@@ -96,7 +114,10 @@ const BlockDetailsPage = () => {
             <Grid item xs={8}>
               <div className=''>
                 <span className='underline underline-offset-2 font-bold text-[#066A9C]'>
-                  {blockInfo.transactions}
+                  {blockInfo.pendingTransactions
+                    ? blockInfo.pendingTransactions.length
+                    : 0}{' '}
+                  transactions
                 </span>{' '}
                 <span>in this block</span>
               </div>
@@ -111,7 +132,7 @@ const BlockDetailsPage = () => {
             </Grid>
             <Grid item xs={8}>
               <Chip
-                label={blockInfo.blockReward + ' Eth'}
+                label={blockInfo.miningReward + ' Eth'}
                 size='small'
                 variant='outlined'
               />

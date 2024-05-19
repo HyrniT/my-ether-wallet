@@ -11,10 +11,9 @@ import {
 } from '@mui/material';
 import BuyModal from '../../components/ui/modal/buy';
 import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { roundNumber } from '../../utils';
 import api from '../../services/api';
-import { setBalance } from '../../store/slices/walletSlice';
 
 const lastethBlock = 19;
 const fee = 0.000256;

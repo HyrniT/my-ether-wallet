@@ -29,7 +29,6 @@ const TransactionDetailsPage = () => {
       .get(`/transaction/${id}`)
       .then(response => {
         if (response.data.success) {
-          console.log(response.data.data);
           setTransactionInfo(response.data.data);
         }
       })

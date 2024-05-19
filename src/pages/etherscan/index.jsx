@@ -48,7 +48,7 @@ const blockHeader = [
       ),
   },
   {
-    field: 'blockReward',
+    field: 'miningReward',
     headerName: 'Block Reward',
     flex: 2,
     type: 'number',
@@ -57,63 +57,6 @@ const blockHeader = [
         <Chip label={params.value + ' Eth'} size='small' variant='outlined' />
       </Tooltip>
     ),
-  },
-];
-
-const blockData = [
-  {
-    id: 1,
-    status: 'Finalized',
-    blockReward: 5,
-    timestamp: '1m ago',
-  },
-  {
-    id: 2,
-    status: 'Finalized',
-    blockReward: 10,
-    timestamp: '1m ago',
-  },
-  {
-    id: 3,
-    status: 'Finalized',
-    blockReward: 15,
-    timestamp: '1m ago',
-  },
-  {
-    id: 4,
-    status: 'Finalized',
-    blockReward: 20,
-    timestamp: '1m ago',
-  },
-  {
-    id: 5,
-    status: 'Finalized',
-    blockReward: 25,
-    timestamp: '1m ago',
-  },
-  {
-    id: 6,
-    status: 'Finalized',
-    blockReward: 30,
-    timestamp: '1m ago',
-  },
-  {
-    id: 7,
-    status: 'Pending',
-    blockReward: 35,
-    timestamp: '1m ago',
-  },
-  {
-    id: 8,
-    status: 'Pending',
-    blockReward: 40,
-    timestamp: '1m ago',
-  },
-  {
-    id: 9,
-    status: 'Pending',
-    blockReward: 45,
-    timestamp: '1m ago',
   },
 ];
 
@@ -177,13 +120,25 @@ const EtherscanPage = () => {
   const address = useSelector(state => state.wallet.address);
 
   const [transactionData, setTransactionData] = useState([]);
+  const [blockData, setBlockData] = useState([]);
+
   useEffect(() => {
     api
       .get(`/transaction`)
       .then(response => {
         if (response.data.success) {
-          console.log(response.data.data);
           setTransactionData(response.data.data);
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      });
+
+    api
+      .get(`/block`)
+      .then(response => {
+        if (response.data.success) {
+          setBlockData(response.data.data);
         }
       })
       .catch(error => {
